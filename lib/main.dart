@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+//import 'package:happy_trails/login_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -8,8 +9,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Hiking App',
+      title: 'Happy Trails App',
+      // initialRoute: '/login', //sets the inital route to the login page
+      // routes: {
+      //   '/login' :(context) => LoginPage(),
+      //   '/home' :(context) => HomePage(),
+      // }
       home: HomePage(),
+   
     );
   }
 }
@@ -35,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hiking App'),
+        title: const Text('Happy Trails'),
       ),
       body: const Center(
         child: Text('This is the main content area'),
@@ -48,18 +55,32 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
+            backgroundColor: Color.fromARGB(255, 5, 66, 7),
+            activeIcon: Icon(Icons.home),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
             label: 'Search',
+            backgroundColor: Color.fromARGB(255, 5, 66, 7),
+            activeIcon: Icon(Icons.search),
+          ),
+           BottomNavigationBarItem(
+            icon: Icon(Icons.trending_neutral),
+            label: 'Nearby Trails',
+            backgroundColor: Color.fromARGB(255, 5, 66, 7),
+            activeIcon: Icon(Icons.trending_neutral),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Settings',
+            backgroundColor: Color.fromARGB(255, 5, 66, 7),
+            activeIcon: Icon(Icons.settings),
           ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        backgroundColor: const Color.fromARGB(255, 5, 66, 7),
+        selectedItemColor: const Color.fromARGB(255, 255, 255, 255),
       ),
     );
   }
