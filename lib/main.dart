@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 //import 'package:happy_trails/login_page.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -63,12 +63,6 @@ class _HomePageState extends State<HomePage> {
             label: 'Search',
             backgroundColor: Color.fromARGB(255, 5, 66, 7),
             activeIcon: Icon(Icons.search),
-          ),
-           BottomNavigationBarItem(
-            icon: Icon(Icons.trending_neutral),
-            label: 'Nearby Trails',
-            backgroundColor: Color.fromARGB(255, 5, 66, 7),
-            activeIcon: Icon(Icons.trending_neutral),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
