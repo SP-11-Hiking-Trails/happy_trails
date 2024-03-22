@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-//import 'package:happy_trails/login_page.dart';
-
+import 'login_page.dart';
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key:key);
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Happy Trails App',
-      // initialRoute: '/login', //sets the inital route to the login page
-      // routes: {
-      //   '/login' :(context) => LoginPage(),
-      //   '/home' :(context) => HomePage(),
-      // }
-      home: HomePage(),
+      initialRoute: '/login', //sets the inital route to the login page
+      routes: {
+        '/login' :(context) => const LoginPage(),
+        '/home' :(context) => const HomePage(),
+      }
+    
    
     );
   }
