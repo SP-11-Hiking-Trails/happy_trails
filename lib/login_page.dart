@@ -124,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                                     padding:
                                         const EdgeInsets.symmetric(horizontal: 64.0),
                                   ),
-                                  child: const Text('Login In'),
+                                  child: const Text('Login'), //fixed spelling error
                                 ),
                               ),
                               const SizedBox(width: 16.0),
