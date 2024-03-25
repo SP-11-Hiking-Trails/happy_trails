@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Trail.dart';
-//import 'package:happy_trails/login_page.dart';
+import 'login_page.dart';
+import 'signup_page.dart';
 
 //The following trail objects are just some test trails made to populate the home page with something.
 //Eventually, the home page will be populated by data from the various trail databases, rather than manually.
@@ -37,13 +38,18 @@ List<Trail> trails = [trail01, trail02, trail03];
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key:key);
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Happy Trails App',
-      home: HomePage(),
+
+      initialRoute: '/login', //sets the inital route to the login page
+      routes: {
+        '/login' :(context) => const LoginPage(),
+        '/home' :(context) => const HomePage(),
+      }
     );
   }
 }
