@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'main.dart';
 import 'signup_page.dart';
 
@@ -111,6 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     //login button action
+                                    
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -131,6 +131,8 @@ class _LoginPageState extends State<LoginPage> {
                               TextButton(
                             onPressed: () {
                               //signup button action
+                              //need to add transition animation
+                              
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
