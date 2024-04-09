@@ -4,6 +4,7 @@ import 'package:happy_trails/login_page.dart';
 import 'main.dart';
 
 
+
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
     @override
