@@ -22,10 +22,18 @@ class Trail {
         imageURLs.add(image['url']);
       }
     }
+
+    String location = '';
+    if (json['addresses'] != null) {
+      for (var address in json['addresses']) {
+        location = address['line1'] + " " + address['city'] + ", " + address['stateCode'] + " " + address['postalCode'];
+      }
+    }
+
     return Trail(
       name: json['fullName'],
       description: json['description'] ?? '',
-      location: json['location'] ?? '',
+      location: location,
       trailRating: json['trailRating']?.toDouble() ?? 5.0,
       trailUsers: json['trailUsers']?.toInt() ?? 0,
       imageURLs: imageURLs,

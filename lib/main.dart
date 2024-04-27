@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'trail.dart';
 import 'login_page.dart';
-//import 'signup_page.dart';
+import 'signup_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -113,6 +113,16 @@ class TrailDetailScreen extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
+                  const SizedBox(height: 25),
+                  const Text(
+                    "Reviews: ",
+                    style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 30)
+                  //TODO: This sized box will display the reviews for the trail.
                 ],
               ),
             ),
@@ -214,7 +224,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _fetchTrails() async {
     const String apiKey = "yILxmZnKvTAHCrtoQFkazmFhQ6ufbvhIfrD69R8P";
-    const String stateCode = "GA"; //TODO add get statement for statecode
+    const String stateCode = "CA"; //TODO add get statement for statecode
     const String url = 'https://developer.nps.gov/api/v1/parks?stateCode=$stateCode&limit=50&api_key=$apiKey';
 
     final response = await http.get(Uri.parse(url));
@@ -261,7 +271,8 @@ class _HomePageState extends State<HomePage> {
       _searchResults = _trails
           .where((trail) =>
               trail.name.toLowerCase().contains(q.toLowerCase()) ||
-              trail.location.toLowerCase().contains(q.toLowerCase()))
+              trail.location.toLowerCase().contains(q.toLowerCase())
+              )
           .toList();
     });
   }
@@ -379,34 +390,6 @@ class _HomePageState extends State<HomePage> {
                                       fontSize: 10,
                                     ),
                                     textAlign: TextAlign.left,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            //Container for the trail difficulty and length.
-                            Container(
-                              alignment: Alignment.bottomRight,
-                              child: Column(
-                                children: <Widget>[
-                                  //Container for the trail difficulty.
-                                  Container(
-                                    alignment: Alignment.bottomRight,
-                                    // child: Text(
-                                    //     "Difficulty: ${trail.trailDifficulty}",
-                                    //     style: const TextStyle(
-                                    //       color: Colors.white,
-                                    //       fontSize: 18,
-                                    //     )),
-                                  ),
-                                  //Container for the trail length.
-                                  Container(
-                                    alignment: Alignment.bottomRight,
-                                    // child: Text(
-                                    //     "Trail Length: ${trail.trailLength.toString()} miles.",
-                                    //     style: const TextStyle(
-                                    //       color: Colors.white,
-                                    //       fontSize: 18,
-                                    //     )),
                                   ),
                                 ],
                               ),
