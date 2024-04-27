@@ -1,3 +1,15 @@
+//amplify api packages ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_authenticator/amplify_authenticator.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'amplifyconfiguration.dart';
+//import 'package:go_router/go_router.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:happy_trails/amplifyconfiguration.dart';
+
+
+//dart packages ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 import 'package:flutter/material.dart';
 import 'trail.dart';
 import 'login_page.dart';
@@ -6,7 +18,24 @@ import 'settings_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-void main() => runApp(const MyApp());
+
+Future<void>_configureAmplify() async {
+    try {
+      final auth = AmplifyAuthCognito();
+      final storage = AmplifyStorageS3();
+      await Amplify.addPlugins([auth,storage]);
+
+      await Amplify.configure(amplifyconfig);
+    } on Exception catch(e) {
+      safePrint("An Error occurred configuring Amplify");
+    }
+}
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  //await _configureAmplify();
+  runApp(const MyApp());
+}
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key:key);

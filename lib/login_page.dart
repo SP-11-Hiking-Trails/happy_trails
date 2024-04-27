@@ -2,6 +2,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'signup_page.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+
 
 //TODO add animations for smoother transitions between pages
 class LoginPage extends StatefulWidget {

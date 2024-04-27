@@ -1,8 +1,10 @@
 import 'dart:ui';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:happy_trails/login_page.dart';
 import 'main.dart';
-
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
 
 class SignupPage extends StatefulWidget {
@@ -35,15 +37,54 @@ class _SignupPageState extends State<SignupPage> {
   String? _selectedState;
 
   final List<String> _states = [
-
-//add state abv 
-    'GA',
-    'AL',
-    'FL',
-    'NY',
-    //etc
-
+    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
   ];
+
+  
+  Future<void> _signUp() async {
+    if (_passwordController.text != _passwordControllerChecker.text) {
+      // Passwords do not match, show an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match')),
+      );
+      return;
+    }
+
+    try {
+      final userAttributes = <CognitoUserAttributeKey, String>{
+        CognitoUserAttributeKey.email: _usernameController.text,
+        // Add more user attributes if needed
+      };
+
+      final result = await Amplify.Auth.signUp(
+        username: _usernameController.text,
+        password: _passwordController.text,
+        options: SignUpOptions(userAttributes: userAttributes),
+      );
+
+      if (result.isSignUpComplete) {
+        // Sign-up successful, navigate to the home page or show a success message
+        Navigator.push(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      } else {
+        // Additional steps required (e.g., email verification)
+        // Handle accordingly
+      }
+    } on AuthException catch (e) {
+      // Handle sign-up errors
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message)),
+      );
+    }
+  }
 
  @override
   Widget build(BuildContext context) {
@@ -161,12 +202,7 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                             const SizedBox(height: 64.0),
                             TextButton(
-                              onPressed: () { //signup button action
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const HomePage())
-                                );
-                              },
+                              onPressed: _signUp, //calls the _signup method on button press 
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color.fromARGB(255, 5, 66, 7),
                                 foregroundColor: Colors.white,

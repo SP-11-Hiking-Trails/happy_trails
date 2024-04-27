@@ -1,0 +1,8 @@
+{
+  "storage": {
+    "dynamodbhappytrails": {
+      "providerPlugin": "awscloudformation",
+      "service": "DynamoDB"
+    }
+  }
+}
