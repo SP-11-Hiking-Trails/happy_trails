@@ -37,7 +37,91 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _changePassword() {
-    // TODO: Implement password change functionality
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String currentPassword = '';
+        String newPassword = '';
+        String confirmPassword = '';
+
+        return AlertDialog(
+          backgroundColor: Colors.grey[850],
+          title: const Text('Change Password', style: TextStyle(color: Colors.white)),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  obscureText: true,
+                  onChanged: (value) {
+                    currentPassword = value;
+                  },
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'Current Password',
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  obscureText: true,
+                  onChanged: (value) {
+                    newPassword = value;
+                  },
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'New Password',
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  obscureText: true,
+                  onChanged: (value) {
+                    confirmPassword = value;
+                  },
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'Confirm New Password',
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                // Perform password change logic here
+                if (newPassword == confirmPassword) {
+                  Navigator.of(context).pop();
+                } else {
+                  // Show an error message if passwords don't match
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        backgroundColor: Colors.grey[850],
+                        title: const Text('Error', style: TextStyle(color: Colors.white)),
+                        content: const Text('Passwords do not match.', style: TextStyle(color: Colors.white)),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('OK', style: TextStyle(color: Colors.white)),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+              child: const Text('Save', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _saveChanges() {

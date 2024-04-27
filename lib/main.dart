@@ -1,4 +1,6 @@
 //amplify api packages ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+import 'dart:math';
+
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
@@ -7,32 +9,138 @@ import 'amplifyconfiguration.dart';
 //import 'package:go_router/go_router.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:happy_trails/amplifyconfiguration.dart';
+// ignore: depend_on_referenced_packages
+import 'package:amplify_analytics_pinpoint/amplify_analytics_pinpoint.dart';
+
 
 
 //dart packages ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 import 'package:flutter/material.dart';
-import 'trail.dart';
+// import 'trail.dart';
 import 'login_page.dart';
 import 'settings_page.dart';
+import 'package:happy_trails/Trail.dart';
 //import 'signup_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:happy_trails/trail_review.dart';
+
 
 
 Future<void>_configureAmplify() async {
+    final auth = AmplifyAuthCognito();
+    final storage = AmplifyStorageS3();
+    final analytics = AmplifyAnalyticsPinpoint();
     try {
-      final auth = AmplifyAuthCognito();
-      final storage = AmplifyStorageS3();
-      await Amplify.addPlugins([auth,storage]);
+      
+      await Amplify.addPlugins([auth,storage,analytics]);
 
       await Amplify.configure(amplifyconfig);
+
     } on Exception catch(e) {
-      safePrint("An Error occurred configuring Amplify");
+      safePrint(e);
     }
 }
+Future<void> submitReview(String trailId, int rating) async {
+  try {
+    final reviewId = UUID().toString();
+    final review = TrailReview(
+      id: reviewId,
+      trailId: trailId,
+      rating: rating,
+    );
+
+    await Amplify.DataStore.save(review);
+    print('Review submitted successfully');
+  } catch (e) {
+    print('Error submitting review: $e');
+  }
+}
+Future<void> fetchTrailRating(String trailId) async {
+  try {
+    final reviews = await Amplify.DataStore.query(
+      TrailReview.classType,
+      where: const QueryField(fieldName: 'trailId').eq(trailId),
+    );
+
+    if (reviews.isNotEmpty) {
+      final totalRating = reviews.fold(0, (sum, review) => sum + review.rating);
+      final avgRating = totalRating / reviews.length;
+      final numRatings = reviews.length;
+
+      // Fetch the trail details from the DataStore using the trail ID
+      final trail = await Amplify.DataStore.query(
+        Trail.classType,
+        where: const QueryField(fieldName: 'id').eq(trailId),
+      );
+
+      if (trail.isNotEmpty) {
+        // Update the trail's average rating and number of ratings
+        final updatedTrail = trail.first.copyWith(
+          avgRating: avgRating,
+          numRatings: numRatings,
+        );
+
+        // Save the updated trail object to the DataStore
+        await Amplify.DataStore.save(updatedTrail);
+      }
+    }
+  } catch (e) {
+    print('Error fetching trail rating: $e');
+  }
+}
+class TrailReview extends Model {
+  static const String TRAIL_ID = "trailId";
+
+  final String id;
+  final String trailId;
+  final int rating;
+
+  TrailReview({
+    required this.id,
+    required this.trailId,
+    required this.rating,
+  });
+
+  @override
+  String getId() {
+    return id;
+  }
+
+  static const classType = const _TrailReviewModelType();
+
+  @override
+  getInstanceType() => classType;
+
+  Map<String, dynamic> serializeAsMap() {
+    return {
+      'id': id,
+      'trailId': trailId,
+      'rating': rating,
+    };
+  }
+
+  factory TrailReview.fromJson(Map<String, dynamic> json) {
+    return TrailReview(
+      id: json['id'],
+      trailId: json['trailId'],
+      rating: json['rating'],
+    );
+  }
+}
+
+class _TrailReviewModelType extends ModelType<TrailReview> {
+  const _TrailReviewModelType();
+
+  @override
+  TrailReview fromJson(Map<String, dynamic> jsonData) {
+    return TrailReview.fromJson(jsonData);
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //await _configureAmplify();
+ // await _configureAmplify();
   runApp(const MyApp());
 }
 
@@ -63,11 +171,57 @@ class HomePage extends StatefulWidget {
 }
 
 //calls the information for a trail/park from the api, routes to a new page with just picture, rating and description
-class TrailDetailScreen extends StatelessWidget {
+// ignore: must_be_immutable
+class TrailDetailScreen extends StatefulWidget {
+  Trail trail;
 
-  final Trail trail;
+  TrailDetailScreen({Key? key, required this.trail}) : super(key: key);
 
-  const TrailDetailScreen({Key? key, required this.trail}) : super(key: key);
+  @override
+  // ignore: library_private_types_in_public_api
+  _TrailDetailScreenState createState() => _TrailDetailScreenState();
+}
+
+class _TrailDetailScreenState extends State<TrailDetailScreen> {
+  int _userRating = 0;
+
+  void _submitRating() {
+    if (_userRating > 0) {
+      final newRating = _userRating.toDouble();
+      final currentRating = widget.trail.avgRating;
+      final currentUserCount = widget.trail.numRatings;
+
+      final newAvgRating = (currentRating * currentUserCount + newRating) / (currentUserCount + 1);
+      final newUserCount = currentUserCount + 1;
+
+      final updatedTrail = widget.trail.copyWith(
+        avgRating: newAvgRating,
+        numRatings: newUserCount,
+      );
+
+      setState(() {
+        widget.trail = updatedTrail;
+      });
+      
+
+      submitReview(widget.trail.id, _userRating);
+      fetchTrailRating(widget.trail.id);
+
+      _updateTrailInHomePage(updatedTrail); 
+       Navigator.push(
+        context,
+        MaterialPageRoute(
+        builder: (context) => const HomePage()),
+        );
+      }
+}
+void _updateTrailInHomePage(Trail updatedTrail) {
+  final homePageState = context.findAncestorStateOfType<_HomePageState>();
+  if (homePageState != null) {
+    homePageState._updateTrail(updatedTrail);
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -75,15 +229,15 @@ class TrailDetailScreen extends StatelessWidget {
       backgroundColor: Colors.grey[850],
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 5, 66, 7),
-        title: Text(trail.name),
+        title: Text(widget.trail.name),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (trail.imageURLs.isNotEmpty)
+            if (widget.trail.imageURLs.isNotEmpty)
               Image.network(
-                trail.imageURLs[0],
+                widget.trail.imageURLs[0],
                 height: 400,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -95,7 +249,7 @@ class TrailDetailScreen extends StatelessWidget {
                 children: [
                   const SizedBox(height: 16),
                   Text(
-                    trail.name,
+                    widget.trail.name,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -104,7 +258,7 @@ class TrailDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    trail.location,
+                    widget.trail.location,
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.white,
@@ -119,7 +273,7 @@ class TrailDetailScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        trail.trailRating.toString(),
+                        widget.trail.avgRating.toStringAsFixed(1),
                         style: const TextStyle(
                           fontSize: 18,
                           color: Colors.amber,
@@ -127,7 +281,7 @@ class TrailDetailScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'Rated by ${trail.trailUsers.toInt()} users',
+                        'Rated by ${widget.trail.numRatings} users',
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.white,
@@ -137,11 +291,46 @@ class TrailDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    trail.description,
+                    widget.trail.description,
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.white,
                     ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Rate this trail:',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (int i = 1; i <= 5; i++)
+                        IconButton(
+                          icon: Icon(
+                            Icons.star,
+                            color: i <= _userRating ? Colors.amber : Colors.grey,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _userRating = i;
+                            });
+                           
+                          },
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _submitRating,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 5, 66, 7),
+                    ),
+                    child: const Text('Submit Rating'),
                   ),
                 ],
               ),
@@ -166,22 +355,29 @@ class _SearchScreenState extends State<SearchScreen> {
   String _searchQuery = '';
 
   Future<void> _fetchTrails() async {
-    const String apiKey = "yILxmZnKvTAHCrtoQFkazmFhQ6ufbvhIfrD69R8P";
-    final String url = 'https://developer.nps.gov/api/v1/parks?limit=500&q=$_searchQuery&api_key=$apiKey';
+  const String apiKey = "yILxmZnKvTAHCrtoQFkazmFhQ6ufbvhIfrD69R8P";
+  final String url = 'https://developer.nps.gov/api/v1/parks?limit=500&q=$_searchQuery&api_key=$apiKey';
+  final response = await http.get(Uri.parse(url));
 
-    final response = await http.get(Uri.parse(url));
+  if (response.statusCode == 200) {
+    final jsonData = json.decode(response.body);
+    final List<dynamic> trailsData = jsonData['data'];
 
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      final List<dynamic> trailsData = jsonData['data'];
+    List<Trail> updatedTrails = [];
 
-      setState(() {
-        _trails = trailsData.map((json) => Trail.fromJson(json)).toList();
-      });
-    } else {
-      print('Failed to reach trail information. Status code: ${response.statusCode}');
+    for (final trailData in trailsData) {
+      final trail = Trail.fromJson(trailData);
+      await fetchTrailRating(trail.id);
+      updatedTrails.add(trail);
     }
+
+    setState(() {
+      _trails = updatedTrails;
+    });
+  } else {
+    print('Failed to reach trail information. Status code: ${response.statusCode}');
   }
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -230,8 +426,6 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 }
 
-
-
 class _HomePageState extends State<HomePage> {
   List<Trail> _trails = [];
   List<Trail> _searchResults = [];
@@ -266,20 +460,21 @@ void _updateStateCode(String? stateCode) { //gets called from settings_page to c
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       final List<dynamic> trailsData = jsonData['data'];
+      final random = Random();
 
       setState(() {
-        _trails = trailsData
-            .map((json) => Trail.fromJson(json))
-            .where((trail) {
-              final name = trail.name.toLowerCase();
-              return name.contains('park') ||
-                  name.contains('trail') ||
-                  name.contains('mountain') ||
-                  name.contains('recreation') ||
-                  name.contains('river');
-            })
-            .toList();
-        _trails.sort((a, b) => a.location.compareTo(b.location));
+      _trails = trailsData
+          .map((json) => Trail.fromJson(json))
+          .where((trail) {
+            final name = trail.name.toLowerCase();
+            return name.contains('park') ||
+                name.contains('trail') ||
+                name.contains('mountain') ||
+                name.contains('recreation') ||
+                name.contains('river');
+          })
+          .toList();
+      _trails.sort((a, b) => a.location.compareTo(b.location));
         //_trails.shuffle();  //shuffle for fun :)
       });
     } else {
@@ -311,15 +506,30 @@ void _updateStateCode(String? stateCode) { //gets called from settings_page to c
 
 
   void _performSearch(String q) {
-    setState(() {
-      _searchQuery = q;
-      _searchResults = _trails
-          .where((trail) =>
-              trail.name.toLowerCase().contains(q.toLowerCase()) ||
-              trail.location.toLowerCase().contains(q.toLowerCase()))
-          .toList();
-    });
-  }
+  setState(() {
+    _searchQuery = q;
+    _searchResults = _trails
+        .where((trail) =>
+            trail.name.toLowerCase().contains(q.toLowerCase()) ||
+            trail.location.toLowerCase().contains(q.toLowerCase()))
+        .map((trail) {
+          final matchingTrail = _trails.firstWhere((t) => t.id == trail.id);
+          return trail.copyWith(
+            avgRating: matchingTrail.avgRating,
+            numRatings: matchingTrail.numRatings,
+          );
+        })
+        .toList();
+  });
+}
+void _updateTrail(Trail updatedTrail) {
+  setState(() {
+    final index = _trails.indexWhere((trail) => trail.id == updatedTrail.id);
+    if (index != -1) {
+      _trails[index] = updatedTrail;
+    }
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -354,7 +564,11 @@ void _updateStateCode(String? stateCode) { //gets called from settings_page to c
                             MaterialPageRoute(
                               builder: (context) => TrailDetailScreen(trail: trail),
                             ),
-                          );
+                          ).then((updatedTrail) {
+                              if (updatedTrail != null && updatedTrail is Trail) {
+                                _updateTrail(updatedTrail);
+                              }
+                            });
                         },
                         child: Container(
                           clipBehavior: Clip.hardEdge,
@@ -391,7 +605,7 @@ void _updateStateCode(String? stateCode) { //gets called from settings_page to c
                                 trail.name,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 40,
+                                  fontSize: 32,
                                 ),
                                 textAlign: TextAlign.left,
                               ),
@@ -419,7 +633,7 @@ void _updateStateCode(String? stateCode) { //gets called from settings_page to c
                                     child: const Icon(Icons.star),
                                   ),
                                   Text(
-                                    trail.trailRating.toString(),
+                                    trail.avgRating.toStringAsFixed(1),
                                     style: const TextStyle(
                                       color: Colors.amber,
                                       fontSize: 25,
@@ -428,7 +642,7 @@ void _updateStateCode(String? stateCode) { //gets called from settings_page to c
                                   ),
                                   const SizedBox(width: 5), // Add some spacing between the rating and the additional text
                                   Text(
-                                    "rated by ${trail.trailUsers.toInt()} users",
+                                    "rated by ${trail.numRatings.toInt()} users",
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 10,

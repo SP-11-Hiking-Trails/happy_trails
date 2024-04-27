@@ -1,16 +1,15 @@
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+
 import 'dart:ui';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:happy_trails/login_page.dart';
 import 'main.dart';
 import 'package:amplify_api/amplify_api.dart';
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
-    @override
-  // ignore: library_private_types_in_public_api
+  @override
   _SignupPageState createState() => _SignupPageState();
 }
 
@@ -28,7 +27,6 @@ class SignupPageCont extends StatelessWidget {
   }
 }
 
-
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
@@ -43,11 +41,10 @@ class _SignupPageState extends State<SignupPage> {
     'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
     'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
   ];
-
-  
+/*//////////////////////////////keep here to line 83 for final sub
   Future<void> _signUp() async {
     if (_passwordController.text != _passwordControllerChecker.text) {
-      // Passwords do not match, show an error message
+      //passwords do not match, show an error message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Passwords do not match')),
       );
@@ -57,7 +54,7 @@ class _SignupPageState extends State<SignupPage> {
     try {
       final userAttributes = <CognitoUserAttributeKey, String>{
         CognitoUserAttributeKey.email: _usernameController.text,
-        // Add more user attributes if needed
+        
       };
 
       final result = await Amplify.Auth.signUp(
@@ -67,26 +64,41 @@ class _SignupPageState extends State<SignupPage> {
       );
 
       if (result.isSignUpComplete) {
-        // Sign-up successful, navigate to the home page or show a success message
+        //sign-up successful, navigate to the home page or show a success message
         Navigator.push(
-          // ignore: use_build_context_synchronously
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(builder: (context) => const HomePage()), //navigate to home page
         );
       } else {
-        // Additional steps required (e.g., email verification)
-        // Handle accordingly
+        
       }
-    } on AuthException catch (e) {
-      // Handle sign-up errors
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
+    } catch (e) {
+      
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()), //RMEOVE THIS ONCE AMPLIFY WORKS 
       );
     }
   }
+*/
+//remove this for final submission
+void _signUp() {
+    if (_passwordController.text != _passwordControllerChecker.text) {
+      // Passwords do not match, show an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match')),
+      );
+      return;
+    }
 
- @override
+    // Bypass Amplify signup and navigate to the HomePage
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HomePage()),
+    );
+  }
+////////////////////////////////////////////////////////////////////////////////////////////////
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
@@ -107,141 +119,135 @@ class _SignupPageState extends State<SignupPage> {
           ),
           Center(
             child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 100, 16, 16),
-                  child: Align(alignment: Alignment.topLeft,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                     // const SizedBox(height: 0),
-                      const Text(
-                        'Lets get to know you',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 32.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        
+              padding: const EdgeInsets.fromLTRB(16, 100, 16, 16),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Let\'s get to know you',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 32.0,
+                        fontWeight: FontWeight.bold,
                       ),
-                      SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TextField(
-                              controller: _usernameController,
-                              style: const TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                hintText: 'Email',
-                                hintStyle: const TextStyle(color: Colors.grey),
-                                filled: true,
-                                fillColor: Colors.black.withOpacity(0.4),
-                                border: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: Colors.black, width: 20.0),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16.0),
-                            TextField(
-                              controller: _passwordController,
-                              obscureText: true,
-                              style: const TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                hintText: 'Password',
-                                hintStyle: const TextStyle(color: Colors.grey),
-                                filled: true, //for testing purposes 
-                                fillColor: Colors.black.withOpacity(0.4),
-                                border: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: Colors.black, width: 20.0),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16.0),
-                            TextField(
-                              controller: _passwordControllerChecker,
-                              obscureText: true,
-                              style: const TextStyle(color: Colors.grey),
-                              decoration: InputDecoration(
-                                hintText: 'Confirm Password',
-                                hintStyle: const TextStyle(color: Colors.grey),
-                                filled: true, //for testing purposes 
-                                fillColor: Colors.black.withOpacity(0.4),
-                                border: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: Colors.black, width: 20.0),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                            ),
-                            //stateselector dropdown menu 
-                            const SizedBox(height: 16.0),
-                            DropdownButtonFormField<String>(
-                              style: const TextStyle(color: Colors.grey),
-                              decoration: InputDecoration(
-                              labelText: 'Select State',
-                              hintStyle: const TextStyle(color: Colors.white),
-                              filled: true, //for testing purposes 
+                    ),
+                    SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextField(
+                            controller: _usernameController,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              hintText: 'Email',
+                              hintStyle: const TextStyle(color: Colors.grey),
+                              filled: true,
                               fillColor: Colors.black.withOpacity(0.4),
                               border: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: Colors.black, width: 20.0),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                              value: _selectedState,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _selectedState = newValue;
-                                });
-                              },
-                              items: _states.map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String> (
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                            ),
-                            const SizedBox(height: 64.0),
-                            TextButton(
-                              onPressed: _signUp, //calls the _signup method on button press 
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color.fromARGB(255, 5, 66, 7),
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(horizontal: 100.0, vertical: 10),
-                              ),
-                              child: const Text(
-                                'Sign Up',
-                                style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                                borderSide: const BorderSide(color: Colors.black, width: 20.0),
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
                             ),
-                            const SizedBox(height: 16.0),
-                            OutlinedButton(
-                              onPressed: () { //continue as guest button action
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const LoginPage())
-                                );
-                              },
-                              style: OutlinedButton.styleFrom(
-                                side: const BorderSide(color: Colors.white),
-                                backgroundColor: Colors.black.withOpacity(0.4),
-                                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                              ),
-                              child: const Text(
-                                'Go back',
-                                style: TextStyle(color: Colors.white),
+                          ),
+                          const SizedBox(height: 16.0),
+                          TextField(
+                            controller: _passwordController,
+                            obscureText: true,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              hintText: 'Password',
+                              hintStyle: const TextStyle(color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.black.withOpacity(0.4),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.black, width: 20.0),
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
                             ),
-                            
-                            
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          TextField(
+                            controller: _passwordControllerChecker,
+                            obscureText: true,
+                            style: const TextStyle(color: Colors.grey),
+                            decoration: InputDecoration(
+                              hintText: 'Confirm Password',
+                              hintStyle: const TextStyle(color: Colors.grey),
+                              filled: true,
+                              fillColor: Colors.black.withOpacity(0.4),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.black, width: 20.0),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          DropdownButtonFormField<String>(
+                            style: const TextStyle(color: Colors.grey),
+                            decoration: InputDecoration(
+                              labelText: 'Select State',
+                              hintStyle: const TextStyle(color: Colors.white),
+                              filled: true,
+                              fillColor: Colors.black.withOpacity(0.4),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.black, width: 20.0),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            value: _selectedState,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _selectedState = newValue;
+                              });
+                            },
+                            items: _states.map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                          const SizedBox(height: 64.0),
+                          TextButton(
+                            onPressed: _signUp,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color.fromARGB(255, 5, 66, 7),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 100.0, vertical: 10),
+                            ),
+                            child: const Text(
+                              'Sign Up',
+                              style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          OutlinedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const LoginPage()),
+                              );
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.white),
+                              backgroundColor: Colors.black.withOpacity(0.4),
+                              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                            ),
+                            child: const Text(
+                              'Go back',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          
+          ),
         ],
       ),
     );

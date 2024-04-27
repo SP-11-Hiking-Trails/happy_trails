@@ -1,0 +1,14 @@
+{
+  "resourceName": "trailReviews",
+  "tableName": "trailReviews",
+  "partitionKey": {
+    "fieldName": "id",
+    "fieldType": "string"
+  },
+  "sortKey": {
+    "fieldName": "trailId",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}

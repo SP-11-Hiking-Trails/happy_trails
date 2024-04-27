@@ -58,7 +58,7 @@ packages:
     source: hosted
     version: "1.6.0"
   amplify_core:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: amplify_core
       sha256: "275dd7c1b65d1b6fac26af0d2fe3c79501be91bffeb629896a4526f88949a240"
@@ -121,6 +121,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.11"
+  another_flushbar:
+    dependency: transitive
+    description:
+      name: another_flushbar
+      sha256: "19bf9520230ec40b300aaf9dd2a8fefcb277b25ecd1c4838f530566965befc2a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.12.30"
+  another_transformer_page_view:
+    dependency: transitive
+    description:
+      name: another_transformer_page_view
+      sha256: a7cd46ede62d621c5abe7e58c7cb2745abe67b3bfec64f59b8889c93d7be7a8e
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   args:
     dependency: transitive
     description:
@@ -281,6 +297,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.14.1"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      sha256: c2b87cb7756efdf69892005af546c56c0b5037f54d2a88269b4f347a505e3ca2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.5"
   fake_async:
     dependency: transitive
     description:
@@ -331,6 +355,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_login:
+    dependency: "direct main"
+    description:
+      name: flutter_login
+      sha256: "1f7c46d0d76081cf4c5180e3a265b1f5b1d7e48c81859f58f03a8dcd27338b85"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -341,6 +373,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  font_awesome_flutter:
+    dependency: transitive
+    description:
+      name: font_awesome_flutter
+      sha256: "275ff26905134bcb59417cf60ad979136f1f8257f2f449914b2c3e05bbb4cd6f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.7.0"
   go_router:
     dependency: "direct main"
     description:
@@ -389,6 +429,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.18.1"
+  intl_phone_number_input:
+    dependency: transitive
+    description:
+      name: intl_phone_number_input
+      sha256: "1c4328713a9503ab26a1fdbb6b00b4cada68c18aac922b35bedbc72eff1297c3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.4"
   js:
     dependency: transitive
     description:
@@ -429,6 +477,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  libphonenumber_platform_interface:
+    dependency: transitive
+    description:
+      name: libphonenumber_platform_interface
+      sha256: f801f6c65523f56504b83f0890e6dad584ab3a7507dca65fec0eed640afea40f
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.2"
+  libphonenumber_plugin:
+    dependency: transitive
+    description:
+      name: libphonenumber_plugin
+      sha256: c615021d9816fbda2b2587881019ed595ecdf54d999652d7e4cce0e1f026368c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.3"
+  libphonenumber_web:
+    dependency: transitive
+    description:
+      name: libphonenumber_web
+      sha256: "8186f420dbe97c3132283e52819daff1e55d60d6db46f7ea5ac42f42a28cc2ef"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.2"
   lints:
     dependency: transitive
     description:
@@ -477,6 +549,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  nested:
+    dependency: transitive
+    description:
+      name: nested
+      sha256: "03bac4c528c64c95c722ec99280375a6f2fc708eec17c7b3f07253b626cd2a20"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   nm:
     dependency: transitive
     description:
@@ -581,6 +661,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.2"
+  phone_numbers_parser:
+    dependency: transitive
+    description:
+      name: phone_numbers_parser
+      sha256: ebe08725e63218a6ae2bf9129b7130332cb2ababa4988f07d6ddce48b0c21e06
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.2.1"
   platform:
     dependency: transitive
     description:
@@ -597,6 +685,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  provider:
+    dependency: transitive
+    description:
+      name: provider
+      sha256: c8a055ee5ce3fd98d6fc872478b03823ffdb448699c6ebdbbc71d59b596fd48c
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.2"
   qr:
     dependency: transitive
     description:
@@ -613,6 +709,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      sha256: b1c1ac5ce6688d77f65f3375a9abb9319b3cb32486bdc7a1e0fdf004d7ba4e47
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.1"
   retry:
     dependency: transitive
     description:
@@ -629,6 +733,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
+  sign_in_button:
+    dependency: transitive
+    description:
+      name: sign_in_button
+      sha256: "977b9b0415d2f3909e642275dfabba7919ba8e111324641b76cae6d1acbd183e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.0"
   sky_engine:
     dependency: transitive
     description: flutter
