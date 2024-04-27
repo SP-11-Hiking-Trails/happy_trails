@@ -1,11 +1,42 @@
+//amplify api packages ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_authenticator/amplify_authenticator.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:happy_trails/settings_page.dart';
+import 'amplifyconfiguration.dart';
+import 'package:go_router/go_router.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:happy_trails/amplifyconfiguration.dart';
+
+
+//dart packages ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 import 'package:flutter/material.dart';
 import 'trail.dart';
 import 'login_page.dart';
-import 'signup_page.dart';
+import 'settings_page.dart';
+//import 'signup_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-void main() => runApp(const MyApp());
+
+Future<void>_configureAmplify() async {
+    try {
+      final auth = AmplifyAuthCognito();
+      final storage = AmplifyStorageS3();
+      await Amplify.addPlugins([auth,storage]);
+
+      await Amplify.configure(amplifyconfig);
+    } on Exception catch(e) {
+      safePrint("An Error occurred configuring Amplify");
+    }
+}
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  //await _configureAmplify();
+  runApp(const MyApp());
+}
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key:key);
@@ -162,7 +193,6 @@ class _SearchScreenState extends State<SearchScreen> {
       print('Failed to reach trail information. Status code: ${response.statusCode}');
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -210,11 +240,26 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 }
+
+
+
 class _HomePageState extends State<HomePage> {
   List<Trail> _trails = [];
   List<Trail> _searchResults = [];
   String _searchQuery = '';
   bool _isSearching = false;
+  String _selectedState ='CA';
+
+
+
+void _updateStateCode(String? stateCode) { //gets called from settings_page to change state location
+  if (stateCode != null) {
+    setState(() {
+      _selectedState = stateCode;
+    });
+    _fetchTrails();
+  }
+}
 
   @override
   void initState() {
@@ -224,8 +269,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _fetchTrails() async {
     const String apiKey = "yILxmZnKvTAHCrtoQFkazmFhQ6ufbvhIfrD69R8P";
-    const String stateCode = "CA"; //TODO add get statement for statecode
-    const String url = 'https://developer.nps.gov/api/v1/parks?stateCode=$stateCode&limit=50&api_key=$apiKey';
+    String stateCode = _selectedState;
+    String url = 'https://developer.nps.gov/api/v1/parks?stateCode=$stateCode&limit=50&api_key=$apiKey';
 
     final response = await http.get(Uri.parse(url));
 
@@ -256,14 +301,25 @@ class _HomePageState extends State<HomePage> {
 
   int _selectedIndex = 0;
 
-  get trails => null;
+  //get trails => null;
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
       _isSearching = (index == 1);
     });
+
+    if (index == 2) {
+      Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SettingsPage(
+          updateStateCode: _updateStateCode,
+      ))
+      );
+    }
   }
+
 
   void _performSearch(String q) {
     setState(() {
@@ -390,6 +446,34 @@ class _HomePageState extends State<HomePage> {
                                       fontSize: 10,
                                     ),
                                     textAlign: TextAlign.left,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            //Container for the trail difficulty and length.
+                            Container(
+                              alignment: Alignment.bottomRight,
+                              child: Column(
+                                children: <Widget>[
+                                  //Container for the trail difficulty.
+                                  Container(
+                                    alignment: Alignment.bottomRight,
+                                    // child: Text(
+                                    //     "Difficulty: ${trail.trailDifficulty}", //removed for now, NPS api doesnt provide this information
+                                    //     style: const TextStyle(
+                                    //       color: Colors.white,
+                                    //       fontSize: 18,
+                                    //     )),
+                                  ),
+                                  //Container for the trail length.
+                                  Container(
+                                    alignment: Alignment.bottomRight,
+                                    // child: Text(
+                                    //     "Trail Length: ${trail.trailLength.toString()} miles.",
+                                    //     style: const TextStyle(
+                                    //       color: Colors.white,
+                                    //       fontSize: 18,
+                                    //     )),
                                   ),
                                 ],
                               ),

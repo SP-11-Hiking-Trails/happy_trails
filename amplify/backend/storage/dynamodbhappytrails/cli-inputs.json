@@ -1,0 +1,14 @@
+{
+  "resourceName": "dynamodbhappytrails",
+  "tableName": "happytrails_userinfo",
+  "partitionKey": {
+    "fieldName": "username",
+    "fieldType": "string"
+  },
+  "sortKey": {
+    "fieldName": "password",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}

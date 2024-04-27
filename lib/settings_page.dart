@@ -9,8 +9,9 @@ class SettingsPage extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   _SettingsPageState createState() => _SettingsPageState();
 }
+
 class _SettingsPageState extends State<SettingsPage> {
-  String _selectedState = 'CA';
+  String _selectedState = "CA";
   //double _textSize = 16.0;
 
   final List<String> _states = [
@@ -21,25 +22,28 @@ class _SettingsPageState extends State<SettingsPage> {
     'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
   ];
 
-  void _changePassword() {
-    // TODO: Implement password change functionality
+  @override
+  void initState() {
+    super.initState();
+    _selectedState = _states.first;
   }
 
   void _setLocation(String? state) {
     if (state != null) {
       setState(() {
-      _selectedState = state;
-    });
-    widget.updateStateCode(state);
+        _selectedState = state;
+      });
     }
   }
 
-  // void _setTextSize(double textSize) {
-  //   setState(() {
-  //     _textSize = textSize;
-  //   });
-  //   // TODO: Implement text size setting functionality
-  // }
+  void _changePassword() {
+    // TODO: Implement password change functionality
+  }
+
+  void _saveChanges() {
+    widget.updateStateCode(_selectedState);
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,25 +100,16 @@ class _SettingsPageState extends State<SettingsPage> {
                 dropdownColor: Colors.grey[850],
                 style: const TextStyle(color: Colors.white),
               ),
-              // const SizedBox(height: 32),
-              // const Text(
-              //   'Text Size',
-              //   style: TextStyle(
-              //     fontSize: 24,
-              //     fontWeight: FontWeight.bold,
-              //     color: Colors.white,
-              //   ),
-              // ),
-              // const SizedBox(height: 16),
-              // Slider(
-              //   value: _textSize,
-              //   min: 12,
-              //   max: 24,
-              //   divisions: 4,
-              //   onChanged: _setTextSize,
-              //   activeColor: const Color.fromARGB(255, 5, 66, 7),
-              //   inactiveColor: Colors.white,
-              // ),
+              const SizedBox(height: 32),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _saveChanges,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 5, 66, 7),
+                  ),
+                  child: const Text('Save'),
+                ),
+              ),
             ],
           ),
         ),

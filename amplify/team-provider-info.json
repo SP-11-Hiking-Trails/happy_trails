@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-happytrails-dev-b4faa-authRole",
+      "UnauthRoleArn": "arn:aws:iam::654654343438:role/amplify-happytrails-dev-b4faa-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::654654343438:role/amplify-happytrails-dev-b4faa-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-happytrails-dev-b4faa-deployment",
+      "UnauthRoleName": "amplify-happytrails-dev-b4faa-unauthRole",
+      "StackName": "amplify-happytrails-dev-b4faa",
+      "StackId": "arn:aws:cloudformation:us-east-1:654654343438:stack/amplify-happytrails-dev-b4faa/73674750-0439-11ef-b24a-12c7caa57447",
+      "AmplifyAppId": "d2hx5o0clj1pvv"
+    },
+    "categories": {
+      "storage": {
+        "dynamodbhappytrails": {}
+      }
+    }
+  }
+}
