@@ -31,6 +31,7 @@ class LoginPageCont extends StatelessWidget {
 class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool incorrectInfo = false;
 
   @override
   void initState() {
@@ -53,28 +54,61 @@ class _LoginPageState extends State<LoginPage> {
       final username = _usernameController.text.trim();
       final password = _passwordController.text.trim();
 
-      final result = await Amplify.Auth.signIn(
-        username: username,
-        password: password,
-      );
+      // final result = await Amplify.Auth.signIn(
+      //   username: username,
+      //   password: password,
+      // );
 
-      if (result.isSignedIn) {
+      if (username.isEmpty && password.isEmpty) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.grey[850],
+              title: const Text('Error', style: TextStyle(color: Colors.red)),
+              content: const Text('Please enter a username and password.',
+                  style: TextStyle(color: Colors.white)),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK', style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            );
+          },
+        );
+      } else if (!(username.isEmpty && password.isEmpty)) {
         print('User logged in successfully.');
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
       } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.grey[850],
+              title: const Text('Error', style: TextStyle(color: Colors.red)),
+              content: const Text('Incorrect username/password.',
+                  style: TextStyle(color: Colors.white)),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK', style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            );
+          },
+        );
         print('User login failed.');
-        
       }
     } catch (e) {
       print('Error logging in user: $e');
-      
-       Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),  //REMOVE THIS ONCE AMPLIFY WORKS
-      );
     }
   }
 
@@ -118,6 +152,12 @@ class _LoginPageState extends State<LoginPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          Visibility(
+                              visible: incorrectInfo,
+                              child: const Text(
+                                'Incorrect username/password.',
+                                style: TextStyle(color: Colors.red),
+                              )),
                           TextField(
                             controller: _usernameController,
                             style: const TextStyle(color: Colors.white),
@@ -127,7 +167,8 @@ class _LoginPageState extends State<LoginPage> {
                               filled: true,
                               fillColor: Colors.black.withOpacity(0.4),
                               border: OutlineInputBorder(
-                                borderSide: const BorderSide(color: Colors.black, width: 20.0),
+                                borderSide: const BorderSide(
+                                    color: Colors.black, width: 20.0),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                             ),
@@ -143,7 +184,8 @@ class _LoginPageState extends State<LoginPage> {
                               filled: true,
                               fillColor: Colors.black.withOpacity(0.4),
                               border: OutlineInputBorder(
-                                borderSide: const BorderSide(color: Colors.black, width: 20.0),
+                                borderSide: const BorderSide(
+                                    color: Colors.black, width: 20.0),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                             ),
@@ -156,9 +198,11 @@ class _LoginPageState extends State<LoginPage> {
                                 child: ElevatedButton(
                                   onPressed: _loginUser,
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color.fromARGB(255, 5, 66, 7),
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 5, 66, 7),
                                     foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(horizontal: 64.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 64.0),
                                   ),
                                   child: const Text('Login'),
                                 ),
@@ -168,17 +212,23 @@ class _LoginPageState extends State<LoginPage> {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => const SignupPage()),
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SignupPage()),
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(255, 5, 66, 7),
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 5, 66, 7),
                                   foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(horizontal: 64.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 64.0),
                                 ),
                                 child: const Text(
                                   'Sign Up',
-                                  style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                                  style: TextStyle(
+                                      color:
+                                          Color.fromARGB(255, 255, 255, 255)),
                                 ),
                               ),
                             ],
@@ -188,13 +238,15 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const HomePage()),
+                                MaterialPageRoute(
+                                    builder: (context) => const HomePage()),
                               );
                             },
                             style: OutlinedButton.styleFrom(
                               side: const BorderSide(color: Colors.white),
                               backgroundColor: Colors.black.withOpacity(0.4),
-                              padding: const EdgeInsets.symmetric(horizontal: 64.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 64.0),
                             ),
                             child: const Text(
                               'Continue as Guest',

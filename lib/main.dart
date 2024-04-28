@@ -209,11 +209,6 @@ class _TrailDetailScreenState extends State<TrailDetailScreen> {
       fetchTrailRating(widget.trail.id);
 
       _updateTrailInHomePage(updatedTrail); 
-       Navigator.push(
-        context,
-        MaterialPageRoute(
-        builder: (context) => const HomePage()),
-        );
       }
 }
 void _updateTrailInHomePage(Trail updatedTrail) {
@@ -432,7 +427,7 @@ class _HomePageState extends State<HomePage> {
   List<Trail> _searchResults = [];
   String _searchQuery = '';
   bool _isSearching = false;
-  String _selectedState ='CA';
+  String _selectedState ='GA';
 
 
 
@@ -633,6 +628,7 @@ void _updateTrail(Trail updatedTrail) {
                                     color: Colors.amber,
                                     child: const Icon(Icons.star),
                                   ),
+
                                   Text(
                                     trail.avgRating.toStringAsFixed(1),
                                     style: const TextStyle(
