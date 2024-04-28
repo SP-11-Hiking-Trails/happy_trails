@@ -41,7 +41,7 @@ class _SignupPageState extends State<SignupPage> {
     'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
     'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
   ];
-/*//////////////////////////////keep here to line 83 for final sub
+
   Future<void> _signUp() async {
     if (_passwordController.text != _passwordControllerChecker.text) {
       //passwords do not match, show an error message
@@ -73,16 +73,16 @@ class _SignupPageState extends State<SignupPage> {
         
       }
     } catch (e) {
-      
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()), //RMEOVE THIS ONCE AMPLIFY WORKS 
+      //give error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error signing up.')),
       );
     }
   }
-*/
-//remove this for final submission
-void _signUp() {
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//pre-amplify code
+/*void _signUp() {
     if (_passwordController.text != _passwordControllerChecker.text) {
       // Passwords do not match, show an error message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -96,8 +96,8 @@ void _signUp() {
       context,
       MaterialPageRoute(builder: (context) => const HomePage()),
     );
-  }
-////////////////////////////////////////////////////////////////////////////////////////////////
+  }*/
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(

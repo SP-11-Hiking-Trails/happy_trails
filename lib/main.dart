@@ -140,7 +140,7 @@ class _TrailReviewModelType extends ModelType<TrailReview> {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
- // await _configureAmplify();
+  //await _configureAmplify();
   runApp(const MyApp());
 }
 

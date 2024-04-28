@@ -71,10 +71,10 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       print('Error logging in user: $e');
       
-       Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),  //REMOVE THIS ONCE AMPLIFY WORKS
-      );
+      //  Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => const HomePage()),  //REMOVE THIS ONCE AMPLIFY WORKS
+      // );
     }
   }
 

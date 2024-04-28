@@ -29,8 +29,8 @@ class Trail extends Model {
     required this.imageURLs,
     double? avgRating,
     int? numRatings,
-  })  : avgRating = avgRating ?? (3.0 + Random().nextDouble() * 2.0) * 0,
-        numRatings = numRatings ?? Random().nextInt(21)* 0; //remove these later. rands for testing
+  })  : avgRating = avgRating ?? (3.0 + Random().nextDouble() * 2.0) ,
+        numRatings = numRatings ?? Random().nextInt(21); //remove these later. rands for testing
 
   Trail copyWith({
     String? id,
