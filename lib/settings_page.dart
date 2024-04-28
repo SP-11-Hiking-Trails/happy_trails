@@ -11,7 +11,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String _selectedState = "CA";
+  String _selectedState = "GA";
   //double _textSize = 16.0;
 
   final List<String> _states = [

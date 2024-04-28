@@ -5,8 +5,9 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:happy_trails/settings_page.dart';
 import 'amplifyconfiguration.dart';
-//import 'package:go_router/go_router.dart';
+import 'package:go_router/go_router.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:happy_trails/amplifyconfiguration.dart';
 // ignore: depend_on_referenced_packages
@@ -208,11 +209,6 @@ class _TrailDetailScreenState extends State<TrailDetailScreen> {
       fetchTrailRating(widget.trail.id);
 
       _updateTrailInHomePage(updatedTrail); 
-       Navigator.push(
-        context,
-        MaterialPageRoute(
-        builder: (context) => const HomePage()),
-        );
       }
 }
 void _updateTrailInHomePage(Trail updatedTrail) {
@@ -431,7 +427,7 @@ class _HomePageState extends State<HomePage> {
   List<Trail> _searchResults = [];
   String _searchQuery = '';
   bool _isSearching = false;
-  String _selectedState ='CA';
+  String _selectedState ='GA';
 
 
 
@@ -632,6 +628,7 @@ void _updateTrail(Trail updatedTrail) {
                                     color: Colors.amber,
                                     child: const Icon(Icons.star),
                                   ),
+
                                   Text(
                                     trail.avgRating.toStringAsFixed(1),
                                     style: const TextStyle(
