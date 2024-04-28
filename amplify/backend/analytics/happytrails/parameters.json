@@ -1,0 +1,21 @@
+{
+    "appName": "happytrails",
+    "roleName": "pinpointLambdaRolea6396220",
+    "cloudformationPolicyName": "cloudformationPolicya6396220",
+    "cloudWatchPolicyName": "cloudWatchPolicya6396220",
+    "pinpointPolicyName": "pinpointPolicya6396220",
+    "authPolicyName": "pinpoint_amplify_a6396220",
+    "unauthPolicyName": "pinpoint_amplify_a6396220",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    }
+}

@@ -1,16 +1,16 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:happy_trails/amplifyconfiguration.dart';
 import 'main.dart';
 import 'signup_page.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
-
-//TODO add animations for smoother transitions between pages
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
   @override
-  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -31,6 +31,52 @@ class LoginPageCont extends StatelessWidget {
 class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _configureAmplify();
+  }
+
+  Future<void> _configureAmplify() async {
+    try {
+      await Amplify.addPlugin(AmplifyAuthCognito());
+      await Amplify.configure(amplifyconfig);
+      print('Amplify configured successfully.');
+    } catch (e) {
+      print('Error configuring Amplify: $e');
+    }
+  }
+
+  Future<void> _loginUser() async {
+    try {
+      final username = _usernameController.text.trim();
+      final password = _passwordController.text.trim();
+
+      final result = await Amplify.Auth.signIn(
+        username: username,
+        password: password,
+      );
+
+      if (result.isSignedIn) {
+        print('User logged in successfully.');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      } else {
+        print('User login failed.');
+        
+      }
+    } catch (e) {
+      print('Error logging in user: $e');
+      
+       Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),  //REMOVE THIS ONCE AMPLIFY WORKS
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,8 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                               filled: true,
                               fillColor: Colors.black.withOpacity(0.4),
                               border: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.black, width: 20.0),
+                                borderSide: const BorderSide(color: Colors.black, width: 20.0),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                             ),
@@ -98,8 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                               filled: true,
                               fillColor: Colors.black.withOpacity(0.4),
                               border: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.black, width: 20.0),
+                                borderSide: const BorderSide(color: Colors.black, width: 20.0),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                             ),
@@ -109,81 +153,42 @@ class _LoginPageState extends State<LoginPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Center(
-                                
                                 child: ElevatedButton(
-                                  onPressed: () {
-                                    //login button action
-                                    
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const HomePage()),
-                                    );
-                                  },
+                                  onPressed: _loginUser,
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        const Color.fromARGB(255, 5, 66, 7),
+                                    backgroundColor: const Color.fromARGB(255, 5, 66, 7),
                                     foregroundColor: Colors.white,
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 64.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 64.0),
                                   ),
-                                  child: const Text('Login'), //fixed spelling error
+                                  child: const Text('Login'),
                                 ),
                               ),
                               const SizedBox(width: 16.0),
                               TextButton(
-                            onPressed: () {
-                              //signup button action
-                              //need to add transition animation
-                              
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const SignupPage()),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromARGB(255, 5, 66, 7),
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 64.0),
-                            ),
-                            child: const Text(
-                              'Sign Up',
-                              style:
-                                  TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-                            ),
-                          ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const SignupPage()),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(255, 5, 66, 7),
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 64.0),
+                                ),
+                                child: const Text(
+                                  'Sign Up',
+                                  style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                                ),
+                              ),
                             ],
-                          ),
-                          const SizedBox(height: 16.0),
-                          TextButton(
-                            onPressed: () {
-                              //signup button action
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const SignupPage()),
-                              );
-                            },
-                            style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: Colors.white),
-                              backgroundColor: Colors.black.withOpacity(0.4),
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            ),
-                            child: const Text(
-                              'Forgot Password?',
-                              style:
-                                  TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-                            ),
                           ),
                           const SizedBox(height: 16.0),
                           OutlinedButton(
                             onPressed: () {
-                              //continue as guest button action
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HomePage()),
+                                MaterialPageRoute(builder: (context) => const HomePage()),
                               );
                             },
                             style: OutlinedButton.styleFrom(

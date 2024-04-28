@@ -13,7 +13,14 @@
     },
     "categories": {
       "storage": {
-        "dynamodbhappytrails": {}
+        "dynamodbhappytrails": {},
+        "trailReviews": {}
+      },
+      "auth": {
+        "happytrails3c85ce89": {}
+      },
+      "analytics": {
+        "happytrails": {}
       }
     }
   }
