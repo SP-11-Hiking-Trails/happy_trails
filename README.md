@@ -1,6 +1,6 @@
-# happy_trails
+# Happy Trails
 
-A new Flutter project.
+Happy Trails allows users to find hiking trails in their area; the length of trails are displayed as well as addresses of each.
 
 ## Getting Started
 
